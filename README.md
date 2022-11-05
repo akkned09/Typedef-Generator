@@ -18,6 +18,6 @@ typedef const char *(__fastcall* test_t)(unsigned int * first_arg);
 
 # Remarks☝️
 * Some include chains might not be resolved, all unknown types will be replaced with int then
-* In this case, add needed file(windows.h in case of some winapi headers) to additional includes, this will help to resolve types
+* In this case, add needed file(windows.h in case of some winapi headers) to additional includes, this will help to resolve types(it also can parse more functions if you will resolve includes manually)
 * Also, some preprocessor directives can screw this script up a bit
 * You can use findstr/grep to extract needed function's typedef from file
