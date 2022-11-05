@@ -90,7 +90,7 @@ def remove_unhandled(line, regex, str):
 
 def main(argv):
     if len(argv) < 4:
-        print(f"usage: {argv[0]} [c++ file] [postfix] [default calling convention]")
+        print(f"usage: {argv[0]} [c++ file] [postfix] [default calling convention] [additional includes...]")
         print(f"T-Gen - a tool to generate typedef's from C++ function prototype\n")
         print("Example:")
         print(f"myfunctions.h:")
@@ -98,7 +98,7 @@ def main(argv):
         print(f"> {argv[0]} myfunctions.h _t __fastcall")
         print(f"typedef const char *(__fastcall* test_t)(unsigned int * first_arg);\n")
         print("Some include chains might not be resolved, all unknown types will be replaced with int then")
-        print("For parsing WinApi files, add #include <windows.h> at the top of the file, this will help to resolve types")
+        print("In this case, add needed file(windows.h in case of some winapi headers) to additional includes, this will help to resolve types")
         print("Also, some preprocessor directives can screw this script up a bit")
         print("You can use findstr/grep to extract needed function's typedef from file")
         return
@@ -106,6 +106,10 @@ def main(argv):
     index = clang.cindex.Index.create()
     
     tmp = ""
+    if (len(argv) > 4):
+        for i in range(4, len(argv)):
+            tmp += f"#include \"{argv[i]}\"\n"
+            
     with open(argv[1], "r") as file:
         for line in file:
             line = remove_unhandled(line, DECLSPEC_RE, "declspec").replace('extern "C" {', '/*extern "C" {*/')
@@ -119,7 +123,7 @@ def main(argv):
 
     for function in functions:
         print(translate_to_typedef(function, argv[2], argv[3]))
-  
+
 
 if __name__ == "__main__":
     main(sys.argv)
